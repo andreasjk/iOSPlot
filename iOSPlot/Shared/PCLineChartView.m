@@ -101,7 +101,8 @@
 		NSString *formatString = [NSString stringWithFormat:@"%%.%if", (power < 0) ? -power : 0];
 		NSString *text;
 		if (self.mappedYLabels != nil) {
-			NSUInteger key = [[NSString stringWithFormat:formatString, y_axis] integerValue];
+            NSString *string = [NSString stringWithFormat:formatString, y_axis];
+			NSUInteger key = [string integerValue];
 			text = [self.mappedYLabels objectForKey:[NSNumber numberWithInteger:key]];
 		} else {
 			text = [NSString stringWithFormat:formatString, y_axis];
@@ -157,7 +158,12 @@
 			id object = [component.points objectAtIndex:x_axis_index];
 
 			if (object!=[NSNull null] && object) {
-				float value = [object floatValue];
+				float value = 0;
+                if ([object isKindOfClass:[NSString class]]) {
+                    value = [(NSString*)object floatValue];
+                } else if ([object isKindOfClass:[NSNumber class]]) {
+                    value = [(NSNumber*)object floatValue];
+                } 
 
 				CGContextSetStrokeColorWithColor(ctx, [component.colour CGColor]);
 				CGContextSetLineWidth(ctx, circle_stroke_width);
@@ -208,7 +214,12 @@
 			NSArray *items = [[self.components objectAtIndex:j] points];
 			id object = [items objectAtIndex:i];
 			if (object!=[NSNull null] && object) {
-				float value = [object floatValue];
+				float value = 0;
+                if ([object isKindOfClass:[NSString class]]) {
+                    value = [(NSString*)object floatValue];
+                } else if ([object isKindOfClass:[NSNumber class]]) {
+                    value = [(NSNumber*)object floatValue];
+                }
 				int x = margin + div_width*i;
 				int y = top_margin + (scale_max-value)/self.interval*div_height;
 				int y1 = y - circle_diameter/2 - self.valueLabelFont.pointSize;
@@ -261,8 +272,8 @@
 		CGContextSetFillColorWithColor(ctx, [colour CGColor]);
 
 		NSString *title = [legend objectForKey:@"title"];
-		float x = [[legend objectForKey:@"x"] floatValue];
-		float y = [[legend objectForKey:@"y"] floatValue];
+		float x = [(NSNumber*)[legend objectForKey:@"x"] floatValue];
+		float y = [(NSNumber*)[legend objectForKey:@"y"] floatValue];
 		if (y<y_level) {
 			y = y_level;
 		}
