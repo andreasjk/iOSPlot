@@ -225,6 +225,9 @@
 
 		for (int j=0; j<[self.components count]; j++) {
 			NSArray *items = [[self.components objectAtIndex:j] points];
+            if (i >= items.count) {
+                continue;
+            }
 			id object = [items objectAtIndex:i];
 			if (object!=[NSNull null] && object) {
 				float value = 0;
